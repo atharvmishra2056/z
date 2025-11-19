@@ -1,0 +1,32 @@
+{
+  "name": "kxw-kuzzboost-marketplace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@heroui/react": "2.8.5",
+    "autoprefixer": "10.4.21",
+    "clsx": "2.1.1",
+    "firebase": "11.10.0",
+    "framer-motion": "12.23.24",
+    "gsap": "3.13.0",
+    "next": "15.5.4",
+    "ogl": "^1.0.11",
+    "postcss": "8.5.6",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "tailwind-merge": "2.6.0",
+    "tailwindcss": "3.4.18",
+    "typescript": "5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.7.1",
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0"
+  }
+}
