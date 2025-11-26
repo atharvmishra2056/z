@@ -44,9 +44,6 @@ coverage
 # Turbo
 .turbo
 
-# Large data files
-z.json
-
 # Firebase cache
 .firebase
 .firebaserc
