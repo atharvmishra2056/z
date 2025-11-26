@@ -1,18 +1,19 @@
 "use client";
 
+import { Button, Input, Link, Divider } from "@heroui/react";
 import { motion } from "framer-motion";
-import { Button, Input, Link, Divider, Avatar } from "@heroui/react";
 import { DiscordIcon } from "@/components/icons/DiscordIcon";
 import { TwitterIcon } from "@/components/icons/TwitterIcon";
 import { InstagramIcon } from "@/components/icons/InstagramIcon";
+import SpotlightButton from "@/components/ui/SpotlightButton";
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     const footerSections = {
-        marketplace: ["Steam", "Valorant", "EA Games", "Epic Games"],
-        company: ["About Us", "Contact", "FAQ", "Support"],
-        legal: ["Terms", "Privacy", "Refund Policy"],
+        marketplace: ["Valorant Accounts", "Steam Bundles", "Rare ID's", "Coaching"],
+        support: ["Help Center", "Submit Ticket", "Report Scam", "System Status"],
+        legal: ["Terms of Service", "Privacy Policy", "Refund Policy", "Licenses"],
     };
 
     const socials = [
@@ -22,121 +23,145 @@ export default function Footer() {
     ];
 
     return (
-        <footer className="w-full mt-32">
-            <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="glassmorphism-heavy rounded-t-[3rem] border-t border-white/20 shadow-glass-inset overflow-hidden"
-            >
-                <div className="container mx-auto px-8 md:px-12 lg:px-16 py-16 max-w-[1400px]">
-                    {/* Newsletter */}
-                    <div className="glassmorphism rounded-3xl p-8 md:p-10 mb-16 border border-white/20">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div>
-                                <h4 className="text-2xl md:text-3xl font-black text-white mb-2">
-                                    Stay Updated
-                                </h4>
-                                <p className="text-white/60">
-                                    Subscribe for exclusive deals and new accounts
-                                </p>
-                            </div>
-                            <div className="flex gap-3 w-full md:w-auto">
-                                <Input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    variant="bordered"
-                                    radius="full"
-                                    classNames={{
-                                        input: "text-white",
-                                        inputWrapper:
-                                            "glassmorphism border-white/20 hover:border-white/40",
-                                    }}
-                                    className="w-full md:w-64"
-                                />
-                                <Button
-                                    radius="full"
-                                    className="bg-gradient-to-r from-white to-gray-100 text-black font-bold px-8"
-                                >
-                                    Subscribe
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
+        <footer className="relative w-full bg-black pt-20 pb-10 overflow-hidden mt-32 border-t border-white/10">
+            
+            {/* --- THE CYBER DECK BACKGROUND --- */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                {/* The Laser Horizon (Top Glow) */}
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-primary to-transparent opacity-70 box-shadow-glow" />
+                
+                {/* The Perspective Grid Floor */}
+                <div 
+                    className="absolute inset-0 opacity-20"
+                    style={{
+                        backgroundImage: `linear-gradient(to right, #333 1px, transparent 1px), linear-gradient(to bottom, #333 1px, transparent 1px)`,
+                        backgroundSize: '40px 40px',
+                        maskImage: 'linear-gradient(to bottom, transparent, black 40%)'
+                    }}
+                />
 
-                    {/* Main Footer */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
-                        {/* Brand */}
-                        <div className="lg:col-span-2 space-y-6">
-                            <div className="flex items-center gap-4">
-                                <Avatar
-                                    icon={<span className="text-sm font-black">LOGO</span>}
-                                    classNames={{
-                                        base: "w-16 h-16 bg-gradient-to-br from-white/15 to-white/5 border-2 border-white/30",
-                                    }}
-                                />
-                                <h3 className="text-3xl font-black gradient-text">
-                                    KXW x KuzzBoost
-                                </h3>
-                            </div>
+                {/* Ambient Glows */}
+                <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-brand-primary/20 rounded-full blur-[120px]" />
+                <div className="absolute top-[-20%] right-[-10%] w-[400px] h-[400px] bg-brand-secondary/10 rounded-full blur-[100px]" />
+            </div>
 
-                            <p className="text-white/60 leading-relaxed max-w-md">
-                                The premium marketplace for gamers, tech enthusiasts, and
-                                content creators. Trusted by thousands worldwide.
-                            </p>
-
-                            <div className="flex gap-3">
-                                {socials.map((social) => (
-                                    <Button
-                                        key={social.name}
-                                        isIconOnly
-                                        radius="lg"
-                                        variant="flat"
-                                        className="glassmorphism border border-white/20 hover:border-white/40 transition-all"
-                                        aria-label={social.name}
-                                    >
-                                        <social.icon fill={social.color} size={20} />
-                                    </Button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Links */}
-                        {Object.entries(footerSections).map(([title, links]) => (
-                            <div key={title} className="space-y-4">
-                                <h4 className="text-lg font-bold text-white capitalize mb-6">
-                                    {title}
-                                </h4>
-                                <ul className="space-y-3">
-                                    {links.map((link) => (
-                                        <li key={link}>
-                                            <Link
-                                                href="#"
-                                                className="text-white/60 hover:text-white transition-colors text-sm font-medium"
-                                            >
-                                                {link}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-
-                    <Divider className="bg-white/10 mb-8" />
-
-                    {/* Bottom */}
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/40">
-                        <p>© {currentYear} KXW x KuzzBoost. All rights reserved.</p>
+            <div className="container mx-auto px-6 relative z-10">
+                
+                {/* --- MAIN ROW: CTA & BRAND --- */}
+                <div className="flex flex-col lg:flex-row gap-16 mb-20">
+                    
+                    {/* Left: Brand Identity */}
+                    <div className="lg:w-1/3 space-y-6">
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                <span>All systems operational</span>
+                            <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
+                                <span className="font-black text-black text-xl">K</span>
+                            </div>
+                            <h2 className="text-3xl font-black text-white tracking-tight">
+                                KXW <span className="text-white/40">x</span> KUZZ
+                            </h2>
+                        </div>
+                        <p className="text-white/60 leading-relaxed">
+                            The next-generation marketplace for digital assets. 
+                            Built for speed, security, and the community.
+                        </p>
+                        
+                        <div className="flex gap-3 pt-2">
+                            {socials.map((social) => (
+                                <motion.button
+                                    key={social.name}
+                                    whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.1)" }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center transition-colors"
+                                >
+                                    <social.icon size={20} fill={social.color} />
+                                </motion.button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Right: Newsletter Card (Glass) */}
+                    <div className="lg:w-2/3 flex flex-col md:flex-row items-center gap-8 p-8 rounded-3xl glass-tahoe border border-white/10 relative overflow-hidden group">
+                        {/* Shine Effect on Hover */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
+                        
+                        <div className="flex-1">
+                            <h3 className="text-xl font-bold text-white mb-2">Stay in the loop</h3>
+                            <p className="text-white/50 text-sm">
+                                Join 15,000+ members getting daily drop alerts. No spam, just loot.
+                            </p>
+                        </div>
+                        
+                        <div className="flex w-full md:w-auto gap-2">
+                            <Input 
+                                placeholder="email@domain.com" 
+                                classNames={{
+                                    input: "text-white",
+                                    inputWrapper: "bg-black/50 border border-white/10 hover:border-white/30"
+                                }}
+                                radius="full"
+                                className="w-full md:w-64"
+                            />
+                            <Button className="bg-white text-black font-bold rounded-full px-6">
+                                Join
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
+                <Divider className="bg-white/10 mb-16" />
+
+                {/* --- LINKS GRID (Interactive) --- */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-20">
+                    {Object.entries(footerSections).map(([title, links]) => (
+                        <div key={title} className="group">
+                            <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6 opacity-50 group-hover:opacity-100 group-hover:text-brand-primary transition-all">
+                                {title}
+                            </h4>
+                            <ul className="space-y-4">
+                                {links.map((link) => (
+                                    <li key={link}>
+                                        <Link 
+                                            href="#" 
+                                            className="text-white/60 hover:text-white transition-colors text-sm hover:translate-x-1 inline-block duration-200"
+                                        >
+                                            {link}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+
+                    {/* Trust Badge Column */}
+                    <div className="space-y-6">
+                         <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-6 opacity-50">
+                            Security
+                        </h4>
+                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                            <div>
+                                <p className="text-white font-bold text-sm">Protected by</p>
+                                <p className="text-white/40 text-xs">SSL Encryption</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </motion.div>
+
+                {/* --- BOTTOM BAR --- */}
+                <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 text-xs text-white/30">
+                    <p>© {currentYear} KXW x KuzzBoost. All rights reserved.</p>
+                    
+                    {/* Giant subtle watermark behind bottom text */}
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[150px] font-black text-white/[0.03] pointer-events-none select-none overflow-hidden leading-none -z-10">
+                        KXW
+                    </span>
+
+                    <div className="flex gap-8 mt-4 md:mt-0 font-medium">
+                        <Link href="#" className="text-white/30 hover:text-white transition-colors">Privacy</Link>
+                        <Link href="#" className="text-white/30 hover:text-white transition-colors">Terms</Link>
+                    </div>
+                </div>
+            </div>
         </footer>
     );
 }

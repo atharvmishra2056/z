@@ -9,6 +9,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) black;
 }
 
 html {
@@ -18,12 +20,73 @@ html {
 }
 
 body {
-    @apply bg-black text-white font-satoshi antialiased;
+    @apply bg-void text-white font-satoshi antialiased;
     overflow-x: hidden;
     min-height: 100vh;
+    /* The Global Noise Texture (Film Grain) */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
-/* Enhanced Glassmorphism */
+/* --- NEW: TAHOE GLASS UTILITIES --- */
+.glass-tahoe {
+    @apply backdrop-blur-[50px] bg-black/40 border border-white/10 relative;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+/* True Squircle Approximation for standard elements */
+.shape-squircle {
+    border-radius: 32px;
+    /* iOS-like large curvature */
+    /* Smooth corner hack if supported, otherwise fallback to radius */
+    corner-smoothing: 100%;
+    /* Future CSS */
+}
+
+.btn-squircle {
+    border-radius: 20px;
+}
+
+/* --- NEW: TACTICAL OBSIDIAN / SQUIRCLE GLASS UTILITIES --- */
+.glass-panel {
+    @apply backdrop-blur-xl bg-black/40 border border-white/5 relative;
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    /* The upper rim light */
+}
+
+.glass-panel:hover {
+    @apply border-brand-primary/50;
+    box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+        0 0 20px rgba(124, 58, 237, 0.1);
+    /* Subtle purple glow on hover */
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Deep Window Panel */
+.glass-deep {
+    @apply backdrop-blur-2xl bg-black/80 border border-white/10;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Tahoe Shadow for Glass Elements */
+.shadow-tahoe {
+    box-shadow:
+        0 20px 40px -10px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+        inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+.text-glow {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* --- EXISTING UTILITIES (PRESERVED FOR SAFETY) --- */
 .glassmorphism {
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(16px);
@@ -49,11 +112,11 @@ body {
     @apply bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent;
 }
 
-/* Rotating Border Animation */
 @keyframes rotate {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -70,7 +133,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    @apply bg-black;
+    @apply bg-void;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -82,15 +145,150 @@ body {
     @apply bg-white/30;
 }
 
-* {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) black;
-}
-
 ::selection {
-    @apply bg-white/20 text-white;
+    @apply bg-brand-primary/30 text-white;
 }
 
 *:focus-visible {
     @apply outline-none ring-2 ring-white/40 ring-offset-2 ring-offset-black rounded-lg;
+}
+
+/* --- PHASE 3: ENHANCED GLASS EFFECTS --- */
+
+/* Frosted Glass - Apple Style */
+.glass-frosted {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Inset Depth Effect */
+.depth-inset {
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.3),
+        0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Glow Effects */
+.glow-purple {
+    box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+}
+
+.glow-blue {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+}
+
+.glow-green {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+}
+
+.glow-red {
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+}
+
+/* Hover Lift Effect */
+.hover-lift {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Glass Button */
+.btn-glass {
+    @apply backdrop-blur-md bg-white/5 border border-white/10;
+    transition: all 0.2s ease;
+}
+
+.btn-glass:hover {
+    @apply bg-white/10 border-white/20;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Shimmer Loading Effect */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* Success Pulse */
+@keyframes success-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 20px rgba(16, 185, 129, 0);
+    }
+}
+
+.success-pulse {
+    animation: success-pulse 2s infinite;
+}
+
+/* Card Hover Glow */
+.card-glow {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.card-glow:hover::before {
+    left: 100%;
+}
+
+/* Text Gradient Animation */
+@keyframes gradient-shift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.text-gradient-animated {
+    background: linear-gradient(90deg, #7c3aed, #3b82f6, #7c3aed);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 3s ease infinite;
 }

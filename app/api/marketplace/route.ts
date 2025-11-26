@@ -1,158 +1,89 @@
 // app/api/marketplace/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { MOCK_ITEMS } from '@/lib/mock-data';
 
-const LZT_BASE = "https://api.lzt.market";
-
-const CATEGORIES: Record<string, string> = {
-    valorant: "/valorant",
-    steam: "/steam",
-    epicgames: "/epicgames",
-    battlenet: "/battlenet",
-    origin: "/ea",
-    minecraft: "/minecraft",
-    warface: "/warface",
-    fortnite: "/epicgames", // Map to Epic Games
+const CATEGORY_MAP: Record<number, string> = {
+    13: 'valorant',
+    1: 'steam',
+    9: 'fortnite',
+    12: 'epicgames',
+    11: 'battlenet',
+    28: 'minecraft',
+    15: 'clash-of-clans',
 };
 
-// In-memory cache
-const cache = new Map<string, { time: number; data: any }>();
-const CACHE_TTL = 120 * 1000; // 2 minutes
-
-// Translation helper
-async function translateToEnglish(text: string): Promise<string> {
-    if (!text) return "";
-    try {
-        const res = await fetch(
-            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ru|en`
-        );
-        const data = await res.json();
-        return data?.responseData?.translatedText || text;
-    } catch {
-        return text;
-    }
-}
-
 export async function GET(request: NextRequest) {
-    // Get token
-    const token = process.env.LZT_TOKEN;
-    if (!token) {
-        return NextResponse.json(
-            { error: 'LZT_TOKEN not configured in environment variables' },
-            { status: 500 }
-        );
-    }
-
     // Get query parameters
     const searchParams = request.nextUrl.searchParams;
-    const category = searchParams.get('category') || 'steam';
-    const page = searchParams.get('page') || '1';
-    const perPage = searchParams.get('per_page') || searchParams.get('limit') || '20';
-    const title = searchParams.get('title');
-    const pmin = searchParams.get('pmin');
-    const pmax = searchParams.get('pmax');
+    const category = searchParams.get('category') || 'all';
+    const page = parseInt(searchParams.get('page') || '1');
+    const perPage = parseInt(searchParams.get('per_page') || searchParams.get('limit') || '20');
+    const title = searchParams.get('title')?.toLowerCase();
+    const pmin = searchParams.get('pmin') ? parseFloat(searchParams.get('pmin')!) : undefined;
+    const pmax = searchParams.get('pmax') ? parseFloat(searchParams.get('pmax')!) : undefined;
     const orderBy = searchParams.get('order_by') || searchParams.get('orderby');
 
-    // Get category endpoint
-    const endpoint = CATEGORIES[category.toLowerCase()];
-    if (!endpoint) {
-        return NextResponse.json(
-            { error: `Invalid category: ${category}` },
-            { status: 400 }
-        );
-    }
+    console.log('🔍 Marketplace API called with:', { category, page, perPage, title, pmin, pmax, orderBy });
 
-    // Cache key
-    const cacheKey = JSON.stringify({
-        category,
-        page,
-        perPage,
-        title,
-        pmin,
-        pmax,
-        orderBy,
-    });
+    // Filter items
+    let filteredItems = [...MOCK_ITEMS];
 
-    const now = Date.now();
-
-    // Check cache
-    if (cache.has(cacheKey)) {
-        const cached = cache.get(cacheKey)!;
-        if (now - cached.time < CACHE_TTL) {
-            console.log('✅ Returning cached data');
-            return NextResponse.json(cached.data);
-        }
-    }
-
-    try {
-        // Build URL - CORRECT FORMAT!
-        const url = new URL(`${LZT_BASE}${endpoint}`);
-        url.searchParams.set('page', page);
-        url.searchParams.set('per_page', perPage);
-
-        // Add filters
-        if (title) url.searchParams.set('title', title);
-        if (pmin) url.searchParams.set('pmin', pmin);
-        if (pmax) url.searchParams.set('pmax', pmax);
-        if (orderBy) url.searchParams.set('order_by', orderBy);
-
-        console.log('🔍 Fetching from LZT:', url.toString());
-
-        const apiResp = await fetch(url.toString(), {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/json',
-            },
-            cache: 'no-store',
+    // Filter by category
+    if (category !== 'all') {
+        const categoryLower = category.toLowerCase();
+        filteredItems = filteredItems.filter(item => {
+            const itemCategory = CATEGORY_MAP[item.category_id]?.toLowerCase();
+            return itemCategory === categoryLower || categoryLower === 'epicgames' && itemCategory === 'fortnite';
         });
+    }
 
-        console.log('📡 LZT Response Status:', apiResp.status);
-
-        if (!apiResp.ok) {
-            const errorText = await apiResp.text();
-            console.error('❌ LZT API Error:', apiResp.status, errorText);
-            return NextResponse.json(
-                { error: `LZT API Error: ${apiResp.statusText}`, details: errorText },
-                { status: apiResp.status }
-            );
-        }
-
-        const json = await apiResp.json();
-        const items = Array.isArray(json.items) ? json.items : [];
-
-        console.log('✅ Fetched', items.length, 'items');
-
-        // Translate titles in parallel
-        const translatedItems = await Promise.all(
-            items.map(async (item: any) => ({
-                ...item,
-                itemid: item.item_id || item.itemid,
-                title: await translateToEnglish(item.title),
-                description: item.description ? await translateToEnglish(item.description) : item.description,
-            }))
-        );
-
-        console.log('✅ Translated all titles');
-
-        // Construct response
-        const data = {
-            items: translatedItems,
-            totalItems: json.totalItems || json.total || items.length,
-            perPage: parseInt(perPage),
-            page: parseInt(page),
-            hasNextPage: json.hasNextPage || items.length === parseInt(perPage),
-            links: json.links,
-            meta: json.meta,
-        };
-
-        // Cache it
-        cache.set(cacheKey, { time: now, data });
-
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('💥 Handler error:', error);
-        return NextResponse.json(
-            { error: error instanceof Error ? error.message : 'Internal Server Error' },
-            { status: 500 }
+    // Filter by title
+    if (title) {
+        filteredItems = filteredItems.filter(item =>
+            item.title.toLowerCase().includes(title)
         );
     }
+
+    // Filter by price range
+    if (pmin !== undefined) {
+        filteredItems = filteredItems.filter(item => item.price >= pmin);
+    }
+    if (pmax !== undefined) {
+        filteredItems = filteredItems.filter(item => item.price <= pmax);
+    }
+
+    // Sort items
+    if (orderBy) {
+        switch (orderBy) {
+            case 'price_asc':
+                filteredItems.sort((a, b) => a.price - b.price);
+                break;
+            case 'price_desc':
+                filteredItems.sort((a, b) => b.price - a.price);
+                break;
+            case 'newest':
+                filteredItems.sort((a, b) => (b.publisheddate || 0) - (a.publisheddate || 0));
+                break;
+            case 'oldest':
+                filteredItems.sort((a, b) => (a.publisheddate || 0) - (b.publisheddate || 0));
+                break;
+        }
+    }
+
+    // Pagination
+    const totalItems = filteredItems.length;
+    const startIndex = (page - 1) * perPage;
+    const endIndex = startIndex + perPage;
+    const paginatedItems = filteredItems.slice(startIndex, endIndex);
+
+    const data = {
+        items: paginatedItems,
+        totalItems,
+        perPage,
+        page,
+        hasNextPage: endIndex < totalItems,
+    };
+
+    console.log(`✅ Returning ${paginatedItems.length} dummy items (page ${page}/${Math.ceil(totalItems / perPage)})`);
+    return NextResponse.json(data);
 }

@@ -1,140 +1,137 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { SearchIcon } from "@/components/icons/SearchIcon";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { Button } from "@heroui/react";
 import { UserIcon } from "@/components/icons/UserIcon";
 import { CartIcon } from "@/components/icons/CartIcon";
-import { CheckCircleIcon } from "@/components/icons/CheckCircleIcon";
+import { ZapIcon } from "@/components/icons/ZapIcon";
 
-const steps = [
+const STEPS = [
     {
-        number: "01",
-        title: "Explore",
-        description: "Start by exploring our marketplace, about what all we have to offer you. Continue if you like the available accounts.",
-        icon: SearchIcon,
-        iconColor: "#3b82f6",
-        borderColor: "#3b82f6",
+        id: 1,
+        title: "Select Account",
+        desc: "Browse our verified inventory of 5000+ premium accounts.",
+        icon: <UserIcon size={32} className="text-white" />,
     },
     {
-        number: "02",
-        title: "Sign In / Sign Up",
-        description: "Sign In or Sign Up on our website to create / login to your account, to be able to place orders.",
-        icon: UserIcon,
-        iconColor: "#a855f7",
-        borderColor: "#a855f7",
+        id: 2,
+        title: "Secure Payment",
+        desc: "Checkout instantly with our protected escrow system.",
+        icon: <CartIcon size={32} className="text-white" />,
     },
     {
-        number: "03",
-        title: "Place an Order",
-        description: "Quickly Place an order by checking out, paying using the payment methods, and relax.",
-        icon: CartIcon,
-        iconColor: "#f59e0b",
-        borderColor: "#f59e0b",
-    },
-    {
-        number: "04",
-        title: "Hand Over",
-        description: "You instantly receive the details of the accounts as required. All details will be provided.",
-        icon: CheckCircleIcon,
-        iconColor: "#22c55e",
-        borderColor: "#22c55e",
+        id: 3,
+        title: "Instant Delivery",
+        desc: "Credentials sent to your email immediately after confirmation.",
+        icon: <ZapIcon size={32} className="text-white" />,
     },
 ];
 
 export default function HowItWorks() {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start 80%", "end 50%"], // Triggers animation as section enters view
+    });
+
+    const beamProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
+    
     return (
-        <section className="w-full py-20">
-            <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="space-y-16"
-            >
+        <section ref={containerRef} className="relative py-32 overflow-hidden">
+            
+            {/* Ambient Background */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-brand-primary/5 blur-[100px] rounded-full" />
+            </div>
+
+            <div className="container mx-auto px-4 relative z-10">
+                
                 {/* Header */}
-                <div className="text-center space-y-4">
-                    <motion.h2
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-4xl md:text-5xl lg:text-6xl font-black gradient-text"
-                    >
-                        How It Works
-                    </motion.h2>
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1 }}
-                        className="text-lg md:text-xl text-white/60 font-medium"
-                    >
-                        Your journey from browsing to owning in 4 simple steps
-                    </motion.p>
+                <div className="text-center max-w-2xl mx-auto mb-16 md:mb-24">
+                    <h2 className="text-4xl md:text-6xl font-black text-white mb-6">
+                        Process <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-secondary">Initiated</span>
+                    </h2>
+                    <p className="text-white/40 text-lg">
+                        Three steps to total domination.
+                    </p>
                 </div>
 
-                {/* Steps with Rotating Border */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {steps.map((step, index) => (
-                        <motion.div
-                            key={step.number}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.15 }}
-                            whileHover={{ scale: 1.02 }}
-                            className="relative"
-                        >
-                            {/* Rotating Border Container */}
-                            <div className="relative rounded-[2rem] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_48px_rgba(0,0,0,0.6)] transition-shadow duration-500">
-                                {/* Rotating Gradient Border */}
-                                <div
-                                    className="absolute inset-[-2px] animate-spin-slow"
-                                    style={{
-                                        background: `conic-gradient(from 0deg, transparent 0deg, transparent 340deg, ${step.borderColor} 360deg)`,
-                                        animationDuration: '5s',
-                                    }}
-                                />
+                {/* --- CIRCUIT DIAGRAM (Desktop) --- */}
+                <div className="relative hidden md:flex justify-between items-start gap-8">
+                    
+                    {/* The Beam Track (Background) */}
+                    <div className="absolute top-12 left-0 w-full h-1 bg-white/5 rounded-full overflow-hidden" />
 
-                                {/* Inner Card */}
-                                <div className="relative bg-black rounded-[2rem] p-8 m-[2px] h-full backdrop-blur-xl">
-                                    {/* Subtle inner gradient */}
-                                    <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+                    {/* The Active Beam (Fills up based on scroll) */}
+                    <div className="absolute top-12 left-0 w-full h-1 rounded-full overflow-hidden">
+                        <motion.div 
+                            style={{ scaleX: beamProgress, transformOrigin: "left" }}
+                            className="h-full w-full bg-gradient-to-r from-brand-primary via-brand-secondary to-brand-success shadow-[0_0_10px_#7c3aed]"
+                        />
+                    </div>
 
-                                    <div className="relative space-y-6">
-                                        {/* Background Number */}
-                                        <div className="absolute top-0 right-0 text-7xl font-black text-white/[0.03]">
-                                            {step.number}
-                                        </div>
-
-                                        {/* Icon */}
-                                        <motion.div
-                                            whileHover={{ rotate: 360, scale: 1.1 }}
-                                            transition={{ duration: 0.6 }}
-                                            className="relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/[0.08] shadow-lg backdrop-blur-sm"
-                                        >
-                                            <step.icon fill={step.iconColor} size={32} />
-                                        </motion.div>
-
-                                        {/* Content */}
-                                        <div className="space-y-3">
-                                            <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                                                <span className="text-white/60 font-bold text-xs">STEP {step.number}</span>
-                                            </div>
-
-                                            <h3 className="text-xl md:text-2xl font-black text-white">
-                                                {step.title}
-                                            </h3>
-
-                                            <p className="text-sm text-white/70 leading-relaxed">
-                                                {step.description}
-                                            </p>
-                                        </div>
-                                    </div>
+                    {STEPS.map((step, idx) => (
+                        <div key={step.id} className="relative flex flex-col items-center text-center flex-1 group">
+                            
+                            {/* Icon Node */}
+                            <motion.div 
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                whileInView={{ scale: 1, opacity: 1 }}
+                                transition={{ delay: idx * 0.2, duration: 0.5 }}
+                                viewport={{ once: true }}
+                                className="relative z-10 mb-8"
+                            >
+                                {/* Glowing Backing */}
+                                <div className="absolute inset-0 bg-brand-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                
+                                <div className="w-24 h-24 rounded-full glass-tahoe border-white/20 flex items-center justify-center relative overflow-hidden shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                                    {step.icon}
                                 </div>
-                            </div>
-                        </motion.div>
+                                <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-black border border-white/20 flex items-center justify-center font-black text-xs">
+                                    0{step.id}
+                                </div>
+                            </motion.div>
+
+                            <h3 className="text-2xl font-bold text-white mb-2">{step.title}</h3>
+                            <p className="text-white/40 text-sm px-8">{step.desc}</p>
+                        </div>
                     ))}
                 </div>
-            </motion.div>
+
+                {/* --- MOBILE VERTICAL LIST --- */}
+                <div className="md:hidden space-y-12 relative pl-8">
+                    {/* Vertical Line */}
+                    <div className="absolute left-12 top-0 bottom-0 w-px bg-white/10" />
+                    
+                    {STEPS.map((step) => (
+                        <div key={step.id} className="relative z-10 flex flex-col items-start pl-12">
+                            <div className="absolute left-0 top-0 w-24 h-24 -ml-12 rounded-full glass-tahoe border-white/20 flex items-center justify-center shadow-xl">
+                                {step.icon}
+                                <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-brand-primary flex items-center justify-center font-bold text-[10px]">
+                                    {step.id}
+                                </div>
+                            </div>
+                            <div className="mt-24 pt-4">
+                                <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                                <p className="text-white/40 text-sm">{step.desc}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* CTA */}
+                <div className="mt-24 flex justify-center">
+                    <Button 
+                        size="lg" 
+                        radius="full"
+                        className="bg-white text-black font-bold px-12 py-8 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] hover:scale-105 transition-transform"
+                    >
+                        Start Transaction
+                    </Button>
+                </div>
+
+            </div>
         </section>
     );
 }

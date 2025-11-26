@@ -1,6 +1,0 @@
-{
-  "/api/marketplace/route": "app/api/marketplace/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/marketplace/page": "app/marketplace/page.js"
-}
